@@ -5,7 +5,7 @@ from os import listdir, remove, path
 from datetime import datetime
 import cv2
 #------------------------------------------------------------------------
-from secret import mongo_dbid, mongo_dbpw, mongo_dbaddr, mongo_dbport
+from secret.secret import mongo_dbid, mongo_dbpw, mongo_dbaddr, mongo_dbport
 #------------------------------------------------------------------------
 file = Blueprint("file", __name__, url_prefix="/file")
 #------------------------------------------------------------------------
@@ -23,6 +23,8 @@ def get_duration(filename):
 #------------------------------------------------------------------------
 #!!! 입 또는 출력이 리스트인 경우는 사이즈가 1인 리스트의 경우를 포함함
 #앞글자가 a인 것은 출력이 중요하지 않음, j는 출력이 중요함
+#------------------------------------------------------------------------
+
 
 @file.route("/")
 def fileIndex():
@@ -34,6 +36,7 @@ def fileIndex():
 def jFilesOut2S():
 	ret = listdir(LOCATION)
 	j = {"ret" : ret}
+	# print(j)
 	return jsonify(j)
 
 #서버에 파일 업로드, 얘는 json아니고 리플래시를 요구함
@@ -58,6 +61,7 @@ def upload():
 	}
 	col_uf.insert_one(doc)
 	return render_template('fileIndex.html')
+
 
 #서버에 업로드된 파일을 삭제 (GID가 사용중인지 확인? 또는 강제로?)
 #입력{gid, 파일리스트} 출력없음

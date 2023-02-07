@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>fileIndex</title>
+	<script src ="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src ="https://code.jquery.com/jquery-migrate-3.3.2.js"></script>
+    <script src="{{ url_for('static', filename='js/fileIndex.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/server_file.js') }}"></script>
+    <link rel="stylesheet" href=" {{ url_for('static', filename='css/server_file.css') }} ">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar__logo">
+            <i class="fa-solid fa-code"></i> <!--로고 뭐 넣어야 할 지 모르겠음 -->
+            <nav class = "mainName">Donga Design Code</nav>
+        </div>
+        <ul class="navbar__menu">
+            <li><a href = "{{url_for('index')}}">Home</a></li>
+        </ul>
+    </nav>
+    
+    <h3>로컬에 존재하는 파일 서버에 업로드</h3>
+    <h5>로컬에 파일이 존재하는지 확인해주세요</h5>
+    <form action="/server/server_upload" method="POST" enctype="multipart/form-data">
+        <label><input type="checkbox" name = "fileType" value="picture"> 사진</label>
+        <label><input type="checkbox" name = "fileType" value="video"> 영상</label><br>
+        <input type="text" name="file"/>
+        <input type="submit"/>
+    </form><br>
+    <h3>서버에서 파일 삭제</h3>
+    <form action="/server/server_delete" method="POST" enctype="multipart/form-data">
+        <input type="text" name="file"/>
+        <input type="submit"/>
+    </form>
+    <h3>로컬에 저장된 파일 리스트</h3>
+    <div id = "fileList"></div>
+    <br><br>
+    <h3>서버에 저장된 파일 리스트</h3>
+    <h4>사진</h4>
+    <div id = "sFileList_pic"></div>
+    <h4>영상</h4><br>
+    <div id = "sFileList_vid"></div>
+</body>
+</html>
