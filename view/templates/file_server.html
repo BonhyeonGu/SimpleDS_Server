@@ -1,3 +1,8 @@
+{% with messages = get_flashed_messages()%}
+ {% if messages %}
+ <script>alert("{{messages[-1]}}")</script>
+ {% endif%}
+ {% endwith %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,8 +29,6 @@
     <h3>로컬에 존재하는 파일 서버에 업로드</h3>
     <h5>로컬에 파일이 존재하는지 확인해주세요</h5>
     <form action="/server/server_upload" method="POST" enctype="multipart/form-data">
-        <label><input type="checkbox" name = "fileType" value="picture"> 사진</label>
-        <label><input type="checkbox" name = "fileType" value="video"> 영상</label><br>
         <input type="text" name="file"/>
         <input type="submit"/>
     </form><br>
@@ -37,10 +40,6 @@
     <h3>로컬에 저장된 파일 리스트</h3>
     <div id = "fileList"></div>
     <br><br>
-    <h3>서버에 저장된 파일 리스트</h3>
-    <h4>사진</h4>
+    <h3>{{date}} 날짜 서버에 저장된 파일 리스트</h3>
     <div id = "sFileList_pic"></div>
-    <h4>영상</h4><br>
-    <div id = "sFileList_vid"></div>
-</body>
 </html>

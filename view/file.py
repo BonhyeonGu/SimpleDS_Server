@@ -69,7 +69,7 @@ def upload():
 def aDeleteFiles():
 	params = request.get_json()
 	fileName = params['fileName']
-	print(fileName)
+	# print(fileName)
 	remove(LOCATION + fileName)
 	return jsonify({"msg" : 'clear'})
 
