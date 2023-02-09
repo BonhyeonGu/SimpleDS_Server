@@ -1,6 +1,5 @@
-from flask import Blueprint, session,flash, redirect, url_for, render_template, jsonify, request
-from werkzeug.utils import secure_filename
-from os import remove, path, listdir
+from flask import Blueprint, flash, redirect, url_for, render_template, jsonify, request
+from os import path, listdir
 import paramiko
 from datetime import datetime
 from pymongo import MongoClient
