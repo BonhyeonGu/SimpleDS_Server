@@ -5,11 +5,21 @@
 	<title>fileIndex</title>
 	<script src ="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src ="https://code.jquery.com/jquery-migrate-3.3.2.js"></script>
+    <link rel="stylesheet" href=" {{ url_for('static', filename='css/server_file.css') }} ">
     <script src="{{ url_for('static', filename='js/fileIndex.js') }}"></script>
     <link rel="stylesheet" href=" {{ url_for('static', filename='css/fileIndex.css') }} ">
 </head>
 
 <body>
+    <nav class="navbar">
+        <div class="navbar__logo">
+            <i class="fa-solid fa-code"></i> <!--로고 뭐 넣어야 할 지 모르겠음 -->
+            <nav class = "mainName">Digital Signage</nav>
+        </div>
+        <ul class="navbar__menu">
+            <li><a href = "{{url_for('index')}}">Home</a></li>
+        </ul>
+    </nav>
     <a href = "{{ url_for('server.file_server')}}">서버에 파일 업로드</a><br><br>
     <form action="/file/upload" method="POST" enctype="multipart/form-data">
         <input type="file" name="file"/>

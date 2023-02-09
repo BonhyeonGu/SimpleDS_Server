@@ -6,10 +6,20 @@
 	<script src ="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src ="https://code.jquery.com/jquery-migrate-3.3.2.js"></script>
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <link rel="stylesheet" href=" {{ url_for('static', filename='css/server_file.css') }} ">
     <link rel="stylesheet" href=" {{ url_for('static', filename='css/index.css') }} ">
 </head>
 
 <body>
+    <nav class="navbar">
+        <div class="navbar__logo">
+            <i class="fa-solid fa-code"></i> <!--로고 뭐 넣어야 할 지 모르겠음 -->
+            <nav class = "mainName">Digital Signage</nav>
+        </div>
+        <ul class="navbar__menu">
+            <li><a href = "{{url_for('index')}}">Home</a></li>
+        </ul>
+    </nav>
     <a href="{{ url_for('file.fileIndex') }}">file</a>
     <br />
     <a>sh</a>
