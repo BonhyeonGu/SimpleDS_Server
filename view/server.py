@@ -80,10 +80,21 @@ def server_upload():
         return render_template('file_server.html',date = d)
 
 
-#서버에서 파일 삭제하기
+# 서버에서 파일 삭제하기
+# 당일 날짜에 대한 것만 수정가능
 @server.route("/server_delete",methods = ['POST'])
 def delete():
-    return render_template('file_server.html',date = d)
+    try:
+        file_Name = request.form['file']
+        sftp.chdir(FILE+d)
+        if file_Name not in sftp.listdir():
+            flash("존재하는 파일인지 확인해주세요")
+            return render_template('file_server.html',date = d)
+        sftp.remove(FILE+d+'/'+file_Name) 
+        return render_template('file_server.html',date = d)
+    except Exception as err:
+        flash("다시 시도해주세요")
+        return render_template('file_server.html',date=d)
 
 #------------------------------------------------------
 #서버에 현재 존재하는 파일 목록 가져오기
