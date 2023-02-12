@@ -22,7 +22,10 @@
     </nav>
     <a href = "{{ url_for('server.file_server')}}">서버에 파일 업로드</a><br><br>
     <form action="/file/upload" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file"/>
+        <h4>콘텐츠 파일 업로드</h4>
+        <input type="file" name="file"/> <br>
+        <h4>QR 파일 업로드</h4>
+        <input type="file" name = "QR"/>
         <input type="submit"/>
     </form>
     <input type = "text" id="deleteInp" /><button id="deleteBtn">delete</button>

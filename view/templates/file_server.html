@@ -29,6 +29,12 @@
     <h3>로컬에 존재하는 파일 서버에 업로드</h3>
     <h5 style="color: gray;">로컬에 파일이 존재하는지 확인해주세요</h5>
     <form action="/server/server_upload" method="POST" enctype="multipart/form-data">
+        <input type="checkbox" name ="content_type" value="col">세로
+        <input type="checkbox" name ="content_type" value="row">가로 <br>
+        <input type="checkbox" name="category" value="notice">공지사항
+        <input type="checkbox" name="category" value="employment">취업정보
+        <input type="checkbox" name="category" value="contest">대회정보 
+        <input type="checkbox" name="category" value="etc">기타.. <br>
         <input type="text" name="file"/>
         <input type="submit"/>
     </form><br>

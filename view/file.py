@@ -10,7 +10,7 @@ from secret.secret import mongo_dbid, mongo_dbpw, mongo_dbaddr, mongo_dbport
 file = Blueprint("file", __name__, url_prefix="/file")
 #------------------------------------------------------------------------
 client = MongoClient(host=mongo_dbaddr, port=mongo_dbport, username=mongo_dbid, password=mongo_dbpw)
-db = client['ds']
+db = client['signage']
 col_uf = db['uploaded_file']
 col_f4g = db['file4group']
 col_s4g = db['schedule4group']
@@ -44,10 +44,13 @@ def jFilesOut2S():
 @file.route("/upload", methods=['POST'])
 def upload():
 	inp_file = request.files['file']
+	inp_qr = request.files['QR']
 	#--------------------------------------------------
 	inp_name = inp_file.filename.replace(' ', '_')
+	qr_name = inp_qr.filename.replace(' ','_')
 	#--------------------------------------------------
 	inp_file.save(LOCATION + secure_filename(inp_name))
+	inp_qr.save(LOCATION + "QR/" + secure_filename(qr_name))
 	inp_date = datetime.today().strftime("%Y%m%d%H%M%S")
 	inp_duration = '-'
 	if inp_name[-3:] in videoFormat:

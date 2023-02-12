@@ -1,8 +1,10 @@
 from flask import Blueprint, flash, redirect, url_for, render_template, jsonify, request
 from os import path, listdir
+from werkzeug.utils import secure_filename
 import paramiko
 from datetime import datetime
 from pymongo import MongoClient
+import cv2
 #-------------------------------------------------------------
 from secret.secret import sftp_host, sftp_id, sftp_pw,sftp_port
 from secret.secret import mongo_dbaddr,mongo_dbid,mongo_dbport,mongo_dbpw
@@ -12,12 +14,13 @@ server = Blueprint("server",__name__, url_prefix="/server")
 client = MongoClient(host=mongo_dbaddr, port=mongo_dbport, username=mongo_dbid, password=mongo_dbpw)
 db = client['ds']
 col_uf = db['uploaded_file']
-col_f4g = db['file4group']
+col_f4g = db['server_file']
 col_s4g = db['schedule4group']
 LOCATION = './files/'
 #------------------------------------------------------------
 d = datetime.today().strftime("%Y-%m-%d")
 FILE = '/upload/file/'
+QR = '/upload/qr/'
 #------------------------------------------------------------
 #sftp 서버 연결 함수
 #ssh로 서버 접속하고 sftp를 open하는 방식으로 동작함
@@ -55,23 +58,69 @@ def file_server():
 #------------------------------------------------------------
 # 서버에 파일 업로드하기.
 # 서버에 존재하는 날짜별 폴더에 맞게 파일 업로드
+# 서버에 업로드하면서 동시에 DB업로드 
+# 1. 컨텐츠 타입 2. 프로그램 
+videoFormat = ['mp4', 'avi', 'mkv']
+imgFormat = ['png','jpg']
+def VidorImg(str):
+    for i in videoFormat:
+        if i in str:
+            return "video"
+    for i in imgFormat:
+        if i in str:
+            return "img"
+    return "-"
+def removeFormat(str):
+    for i in videoFormat:
+        if i in str:
+            str.replace("."+i,"")
+            return str
+    for i in imgFormat:
+        if i in str:
+            str.replace("."+i,"")
+            return str
+    return str
 
 @server.route("/server_upload",methods = ['POST'])
 def server_upload():
     ret = listdir(LOCATION)
     try:
-        file_Name = request.form['file']
+        file = request.form['file']
+        file_Name = file.replace(' ','_')
         if file_Name not in ret:
             flash("파일이 로컬환경에 존재하는 파일인지 확인해주세요")
             return render_template('file_server.html',date=d)
         sftp.chdir(FILE)
         if d not in sftp.listdir():
             sftp.mkdir(d)
+            sftp.chdir(QR)
+            sftp.mkdir(d)
         sftp.chdir(FILE+d)
         if file_Name in sftp.listdir():
             flash("이미 존재하는 파일입니다.")
             return render_template('file_server.html',date=d)
+        #---------------------------------------------------
+        inp_type = VidorImg(file_Name)
+        inp_direction = request.form['content_type']
+        inp_category = request.form['category']
+        inp_filepath = FILE + d +"/"+ file_Name
+        inp_qrpath = QR + d +"/qr_" +file_Name
+        inp_title = removeFormat(file_Name)
+        inp_date = datetime.today().strftime("%Y%m%d%H%M%S")
+        doc = {
+            "type": inp_type,
+            "direction": inp_direction,
+            "category": inp_category,
+            "title" : inp_title,
+            "filepath": inp_filepath,
+            "QR": inp_qrpath,
+            "date" : inp_date
+        }
+        print(doc)
+        col_f4g.insert_one(doc)
         sftp.put(LOCATION+file_Name, file_Name, callback=None, confirm=True)
+        sftp.chdir(QR+d)
+        sftp.put(LOCATION+"QR/"+file_Name , file_Name,  callback=None, confirm=True)
         flash("파일 업로드 완료")
         return render_template('file_server.html',date = d)
     except Exception as err:
