@@ -22,6 +22,17 @@ d = datetime.today().strftime("%Y-%m-%d")
 FILE = '/upload/file/'
 QR = '/upload/qr/'
 #------------------------------------------------------------
+videoFormat = ['mp4', 'avi', 'mkv']
+def get_duration(filename):
+    for i in videoFormat:
+        if i in filename:
+            video = cv2.VideoCapture(filename)
+            Frame_count = video.get(cv2.CAP_PROP_FRAME_COUNT)
+            fps = video.get(cv2.CAP_PROP_FPS)
+            print(str(Frame_count) +'\n' + str(fps))
+            return Frame_count/fps + 1
+    return '-'
+#------------------------------------------------------------
 #sftp 서버 연결 함수
 #ssh로 서버 접속하고 sftp를 open하는 방식으로 동작함
 #홈 페이지에 들어가면 항상 sftp 서버랑 연결되어있게 함
@@ -81,6 +92,8 @@ def removeFormat(str):
             return str
     return str
 
+
+
 @server.route("/server_upload",methods = ['POST'])
 def server_upload():
     ret = listdir(LOCATION)
@@ -103,6 +116,7 @@ def server_upload():
         inp_type = VidorImg(file_Name)
         inp_direction = request.form['content_type']
         inp_category = request.form['category']
+        inp_duration = get_duration(LOCATION+file_Name)
         inp_filepath = FILE + d +"/"+ file_Name
         inp_qrpath = QR + d +"/qr_" +file_Name
         inp_title = removeFormat(file_Name)
@@ -111,6 +125,7 @@ def server_upload():
             "type": inp_type,
             "direction": inp_direction,
             "category": inp_category,
+            "duration" : inp_duration,
             "title" : inp_title,
             "filepath": inp_filepath,
             "QR": inp_qrpath,

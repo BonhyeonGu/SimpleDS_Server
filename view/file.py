@@ -41,6 +41,7 @@ def jFilesOut2S():
 
 #서버에 파일 업로드, 얘는 json아니고 리플래시를 요구함
 #입력파일 출력없음
+#QR파일은 동일 이름에 앞에 QR을 붙여준다. 자동으로
 @file.route("/upload", methods=['POST'])
 def upload():
 	inp_file = request.files['file']
@@ -50,7 +51,7 @@ def upload():
 	qr_name = inp_qr.filename.replace(' ','_')
 	#--------------------------------------------------
 	inp_file.save(LOCATION + secure_filename(inp_name))
-	inp_qr.save(LOCATION + "QR/" + secure_filename(qr_name))
+	inp_qr.save(LOCATION + "QR/" + secure_filename('qr_'+qr_name))
 	inp_date = datetime.today().strftime("%Y%m%d%H%M%S")
 	inp_duration = '-'
 	if inp_name[-3:] in videoFormat:
